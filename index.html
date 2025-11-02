@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌤️ DayPilot - Quản lý lịch cá nhân</title>
+  <link rel="stylesheet" href="src/css/style.css" />
+</head>
+<body>
+
+  <!-- ====== THANH TIÊU ĐỀ ====== -->
+  <header>
+    <h1>🌤️ DayPilot</h1>
+  </header>
+
+  <!-- ====== BỐ CỤC CHÍNH: SIDEBAR + NỘI DUNG ====== -->
+  <div class="container">
+
+    <!-- ====== SIDEBAR (CÁC LOẠI LỊCH) ====== -->
+    <aside class="sidebar">
+      <button id="addScheduleBtn">+ Thêm lịch</button>
+      <ul id="scheduleList"></ul>
+    </aside>
+
+    <!-- ====== KHU VỰC HIỂN THỊ LỊCH ====== -->
+    <main class="calendar">
+
+      <h2>Lịch của bạn</h2>
+
+      <!-- 🔹 THANH CHỌN NGÀY + CHẾ ĐỘ XEM -->
+      <div class="filter-bar">
+        <input type="date" id="dateFilter" />
+        <button id="todayBtn">📅 Hôm nay</button>
+
+        <!-- 🔘 CHẾ ĐỘ XEM NGÀY / TUẦN / THÁNG -->
+        <div class="view-mode">
+          <label><input type="radio" name="viewMode" value="day" checked> Ngày</label>
+          <label><input type="radio" name="viewMode" value="week"> Tuần</label>
+          <label><input type="radio" name="viewMode" value="month"> Tháng</label>
+        </div>
+
+        <!-- 🧭 CHUYỂN DẠNG GIAO DIỆN -->
+        <button id="toggleViewBtn" class="secondary-btn">🔄 Chuyển sang dạng lưới</button>
+      </div>
+
+      <!-- ====== GIAO DIỆN DANH SÁCH ====== -->
+      <div id="scheduleContainer"></div>
+
+      <!-- ====== THANH ĐIỀU HƯỚNG CHO GRID VIEW ====== -->
+      <div id="gridHeader" class="hidden">
+        <div class="grid-nav">
+          <button id="prevGridBtn">⬅️</button>
+          <span id="gridTitle">Tháng 11 / 2025</span>
+          <button id="nextGridBtn">➡️</button>
+          <button id="todayGridBtn">📅 Hôm nay</button>
+
+          <select id="gridModeSelect">
+            <option value="month" selected>Xem theo tháng</option>
+            <option value="week">Xem theo tuần</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ====== GIAO DIỆN LƯỚI ====== -->
+      <div id="gridContainer" class="hidden"></div>
+
+      <!-- ====== POPUP THÊM / SỬA LỊCH ====== -->
+      <div id="popupOverlay" class="hidden">
+        <div id="addForm" class="popup">
+          <h3>Thêm / Sửa lịch</h3>
+
+          <!-- Tiêu đề -->
+          <input type="text" id="titleInput" placeholder="Tiêu đề hoạt động" />
+
+          <!-- Ngày -->
+          <input type="date" id="dateInput" />
+
+          <!-- Thời gian bắt đầu - kết thúc -->
+          <div class="time-range">
+            <input type="time" id="startTimeInput" />
+            <span>→</span>
+            <input type="time" id="endTimeInput" />
+          </div>
+
+          <!-- Ghi chú -->
+          <textarea id="noteInput" placeholder="Ghi chú..."></textarea>
+
+          <!-- Loại lịch -->
+          <label for="typeSelect">Loại lịch:</label>
+          <select id="typeSelect"></select>
+
+          <!-- Thêm loại mới -->
+          <div id="newTypeBox" class="hidden">
+            <input type="text" id="newTypeInput" placeholder="Nhập loại lịch mới..." />
+            <button id="addNewTypeBtn">Thêm loại</button>
+          </div>
+
+          <!-- Nút hành động -->
+          <button id="saveScheduleBtn">Lưu</button>
+          <button id="cancelBtn">Hủy</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ====== SCRIPT CHÍNH ====== -->
+  <script src="src/js/main.js"></script>
+</body>
+</html>
