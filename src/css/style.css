@@ -1,12 +1,8 @@
 /* ==========================================================
-   🌤️ DAYPILOT - STYLE.CSS
-   Phiên bản hoàn chỉnh (Giai đoạn 8C)
-   Tác dụng: tạo giao diện hiện đại, gọn gàng, linh hoạt
+   DAYPILOT - STYLE.CSS (Giai đoạn 10 - Modular)
 ========================================================== */
 
-/* -------------------------------
-   1. RESET + CẤU HÌNH CƠ BẢN
---------------------------------*/
+/* RESET */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -22,9 +18,7 @@ body {
   flex-direction: column;
 }
 
-/* -------------------------------
-   2. HEADER (TIÊU ĐỀ)
---------------------------------*/
+/* HEADER */
 header {
   background-color: #3b82f6;
   color: white;
@@ -35,16 +29,14 @@ header {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* -------------------------------
-   3. BỐ CỤC CHÍNH: SIDEBAR + LỊCH
---------------------------------*/
+/* BỐ CỤC CHÍNH */
 .container {
   display: flex;
   flex: 1;
   height: calc(100vh - 60px);
 }
 
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 .sidebar {
   width: 240px;
   background: #ffffff;
@@ -85,7 +77,6 @@ header {
   background-color: #f3f4f6;
 }
 
-/* Màu chấm tròn bên cạnh loại lịch */
 .color-dot {
   display: inline-block;
   width: 12px;
@@ -95,16 +86,14 @@ header {
   vertical-align: middle;
 }
 
-/* ===== KHU VỰC CHÍNH (MAIN CALENDAR) ===== */
+/* KHU VỰC CHÍNH */
 .calendar {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
-/* -------------------------------
-   4. THANH LỌC + CHẾ ĐỘ XEM
---------------------------------*/
+/* THANH LỌC */
 .filter-bar {
   display: flex;
   align-items: center;
@@ -134,7 +123,6 @@ header {
   background-color: #2563eb;
 }
 
-/* Nút chuyển dạng phụ (xám) */
 .secondary-btn {
   background-color: #9ca3af;
   color: white;
@@ -142,14 +130,12 @@ header {
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
-  transition: opacity 0.2s ease;
 }
 
 .secondary-btn:hover {
   opacity: 0.9;
 }
 
-/* Radio chọn chế độ xem */
 .view-mode {
   display: flex;
   align-items: center;
@@ -159,16 +145,9 @@ header {
 .view-mode label {
   font-size: 14px;
   cursor: pointer;
-  color: #333;
 }
 
-.view-mode input[type="radio"] {
-  margin-right: 4px;
-}
-
-/* -------------------------------
-   5. THẺ LỊCH (LIST VIEW)
---------------------------------*/
+/* LỊCH (LIST VIEW) */
 .schedule-card {
   background: white;
   padding: 12px;
@@ -183,27 +162,10 @@ header {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.schedule-card h3 {
-  margin-bottom: 6px;
-}
-
-.schedule-card button {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 5px;
-}
-
-/* -------------------------------
-   6. POPUP THÊM / SỬA LỊCH
---------------------------------*/
+/* POPUP */
 #popupOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -245,37 +207,62 @@ header {
   background-color: #1d4ed8;
 }
 
-/* Ẩn khi không dùng */
-.hidden {
-  display: none !important;
+/* QUẢN LÝ LOẠI LỊCH */
+#typeManagerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
 }
 
-/* Nhập thời gian bắt đầu - kết thúc */
-.time-range {
+.type-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.time-range input {
-  flex: 1;
   padding: 8px;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   border: 1px solid #ccc;
+  cursor: pointer;
 }
 
-.time-range span {
-  font-weight: bold;
-  color: #555;
+.type-actions button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-/* -------------------------------
-   7. GIAO DIỆN LƯỚI (GRID VIEW)
---------------------------------*/
+/* GRID VIEW */
 #gridHeader {
   margin-bottom: 10px;
+}
+
+.grid-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.grid-nav button, .grid-nav select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #fff;
 }
 
 #gridContainer {
@@ -292,7 +279,7 @@ header {
   min-height: 80px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   transition: transform 0.15s ease;
 }
 
@@ -305,65 +292,106 @@ header {
   font-weight: bold;
   font-size: 14px;
   color: #3b82f6;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .day-cell .event {
   font-size: 13px;
-  margin-left: 6px;
   color: #333;
   border-left: 3px solid #3b82f6;
   padding-left: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  line-height: 1.3;
 }
 
-/* Thanh điều hướng trong grid */
-.grid-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 10px;
+.today-cell {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
 }
 
-.grid-nav button,
-.grid-nav select {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.today-cell .date {
+  color: #dc2626 !important;
+  font-weight: 700;
+}
+
+/* Ô ngày được chọn từ filter bar */
+.selected-cell {
+  border: 3px solid #2563eb !important;
+  background-color: #eff6ff !important;
+  transform: scale(1.05);
+  transition: all 0.25s ease;
+  z-index: 2;
+}
+
+.selected-cell .date {
+  color: #1d4ed8 !important;
+  font-weight: 700;
+}
+
+/* Highlight loại lịch đang được chọn */
+.sidebar ul li.active {
+  background-color: #dbeafe;      /* Xanh nhạt */
+  font-weight: 600;
+  border-left: 4px solid #2563eb; /* Viền xanh */
+  color: #1e3a8a;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
   cursor: pointer;
-  background-color: #fff;
-}
-
-.grid-nav button:hover {
-  background-color: #f3f4f6;
-}
-
-#gridTitle {
-  font-weight: bold;
   font-size: 16px;
-  color: #2563eb;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-/* -------------------------------
-   8. RESPONSIVE (TÙY CHỌN)
---------------------------------*/
+.edit-btn:hover {
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+.delete-btn:hover {
+  color: #dc2626;
+  transform: scale(1.1);
+}
+
+.day-group-title {
+  margin: 20px 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e40af;
+  text-transform: capitalize;
+  border-left: 4px solid #3b82f6;
+  padding-left: 8px;
+}
+
+#scheduleContainer, #gridContainer {
+  transition: opacity 0.25s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
-
   .sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #ddd;
   }
-
   .calendar {
     padding: 12px;
   }
-
   #gridContainer {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.hidden {
+  display: none !important;
 }

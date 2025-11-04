@@ -1,6 +1,6 @@
 /* ==============================================================
-   🌤️ DAYPILOT - MAIN.JS
-   Phiên bản: Hoàn chỉnh Giai đoạn 8C
+   DAYPILOT - MAIN.JS
+   Phiên bản: Hoàn chỉnh Giai đoạn 9
    Mô tả: Toàn bộ logic của ứng dụng DayPilot
 ================================================================ */
 
@@ -9,23 +9,22 @@
 ------------------------------ */
 let schedules = JSON.parse(localStorage.getItem("schedules")) || [];
 
-// Màu mặc định cho các loại lịch
 let typeColors = JSON.parse(localStorage.getItem("typeColors")) || {
-  work: "#3b82f6",      // xanh dương
-  study: "#f97316",     // cam
-  health: "#10b981",    // xanh lá
-  personal: "#8b5cf6"   // tím
+  work: "#3b82f6",
+  study: "#f97316",
+  health: "#10b981",
+  personal: "#8b5cf6"
 };
 
 let types = Object.keys(typeColors);
 let currentFilterDate = "";
 let currentViewMode = "day";
 let currentLayout = "list";
-let gridDate = new Date();      // ngày hiện tại đang xem trong grid
-let gridMode = "month";         // "month" hoặc "week"
+let gridDate = new Date();
+let gridMode = "month";
 
 /* -----------------------------
-   2. HÀM LƯU DỮ LIỆU VÀO LOCAL
+   2. HÀM LƯU DỮ LIỆU
 ------------------------------ */
 function saveToLocal() {
   localStorage.setItem("schedules", JSON.stringify(schedules));
@@ -41,7 +40,7 @@ function calcDuration(start, end) {
   const [h1, m1] = start.split(":").map(Number);
   const [h2, m2] = end.split(":").map(Number);
   let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
-  if (diff < 0) diff += 24 * 60; // nếu qua ngày
+  if (diff < 0) diff += 24 * 60;
   const hours = Math.floor(diff / 60);
   const minutes = diff % 60;
   let txt = "";
@@ -57,14 +56,12 @@ function renderSidebar(typeList) {
   const list = document.getElementById("scheduleList");
   list.innerHTML = "";
 
-  // Mục "Tất cả"
   const allItem = document.createElement("li");
-  allItem.innerHTML = `📅 <b>Tất cả lịch</b>`;
+  allItem.innerHTML = `<b>Tất cả lịch</b>`;
   allItem.style.color = "#3b82f6";
   allItem.onclick = () => renderSchedules(schedules);
   list.appendChild(allItem);
 
-  // Liệt kê từng loại lịch
   typeList.forEach(t => {
     const li = document.createElement("li");
     li.innerHTML = `
@@ -91,7 +88,6 @@ function renderSchedules(data) {
   const container = document.getElementById("scheduleContainer");
   container.innerHTML = "";
 
-  // Lọc theo ngày nếu có chọn
   let filteredData = data;
   if (currentFilterDate) {
     const selected = new Date(currentFilterDate);
@@ -135,7 +131,7 @@ function renderSchedules(data) {
       </div>
       <p><b>Ngày:</b> ${item.date}</p>
       <p><b>Thời gian:</b> ${item.startTime} → ${item.endTime}</p>
-      <p style="color:#2563eb;"><b>⏱ Thời lượng:</b> ${calcDuration(item.startTime, item.endTime)}</p>
+      <p style="color:#2563eb;"><b>Thời lượng:</b> ${calcDuration(item.startTime, item.endTime)}</p>
       <p>${item.note}</p>
       <p><b>Loại:</b> <span style="color:${typeColors[item.type]}">${item.type}</span></p>
     `;
@@ -215,7 +211,7 @@ function renderGridView() {
       document.getElementById("scheduleContainer").classList.remove("hidden");
       document.getElementById("gridContainer").classList.add("hidden");
       document.getElementById("gridHeader").classList.add("hidden");
-      document.getElementById("toggleViewBtn").textContent = "🔄 Chuyển sang dạng lưới";
+      document.getElementById("toggleViewBtn").textContent = "Chuyển sang dạng lưới";
       currentFilterDate = dateStr;
       document.getElementById("dateFilter").value = dateStr;
       renderSchedules(schedules);
@@ -228,7 +224,7 @@ function renderGridView() {
 }
 
 /* -----------------------------
-   8. NÚT THÊM / LƯU LỊCH
+   8. THÊM / LƯU LỊCH
 ------------------------------ */
 document.getElementById("addScheduleBtn").onclick = () => {
   document.getElementById("popupOverlay").classList.remove("hidden");
@@ -271,7 +267,6 @@ function updateTypeOptions() {
     select.appendChild(opt);
   });
 
-  // Thêm lựa chọn tạo loại mới
   const optNew = document.createElement("option");
   optNew.value = "new";
   optNew.textContent = "+ Tạo loại mới";
@@ -375,7 +370,7 @@ document.getElementById("popupOverlay").onclick = (e) => {
 };
 
 /* -----------------------------
-   13. LỌC LỊCH THEO NGÀY
+   13. LỌC THEO NGÀY
 ------------------------------ */
 document.getElementById("dateFilter").addEventListener("change", (e) => {
   currentFilterDate = e.target.value;
@@ -394,7 +389,7 @@ document.getElementById("todayBtn").addEventListener("click", () => {
 });
 
 /* -----------------------------
-   14. THAY ĐỔI CHẾ ĐỘ XEM (NGÀY / TUẦN / THÁNG)
+   14. THAY ĐỔI CHẾ ĐỘ XEM
 ------------------------------ */
 document.querySelectorAll('input[name="viewMode"]').forEach(radio => {
   radio.addEventListener("change", (e) => {
@@ -404,7 +399,7 @@ document.querySelectorAll('input[name="viewMode"]').forEach(radio => {
 });
 
 /* -----------------------------
-   15. CHUYỂN GIỮA LIST <-> GRID
+   15. CHUYỂN GIỮA LIST / GRID
 ------------------------------ */
 document.getElementById("toggleViewBtn").addEventListener("click", () => {
   if (currentLayout === "list") {
@@ -412,20 +407,20 @@ document.getElementById("toggleViewBtn").addEventListener("click", () => {
     document.getElementById("scheduleContainer").classList.add("hidden");
     document.getElementById("gridContainer").classList.remove("hidden");
     document.getElementById("gridHeader").classList.remove("hidden");
-    document.getElementById("toggleViewBtn").textContent = "↩️ Quay lại dạng danh sách";
+    document.getElementById("toggleViewBtn").textContent = "Quay lại dạng danh sách";
     renderGridView();
   } else {
     currentLayout = "list";
     document.getElementById("scheduleContainer").classList.remove("hidden");
     document.getElementById("gridContainer").classList.add("hidden");
     document.getElementById("gridHeader").classList.add("hidden");
-    document.getElementById("toggleViewBtn").textContent = "🔄 Chuyển sang dạng lưới";
+    document.getElementById("toggleViewBtn").textContent = "Chuyển sang dạng lưới";
     renderSchedules(schedules);
   }
 });
 
 /* -----------------------------
-   16. ĐIỀU HƯỚNG GRID (THÁNG / TUẦN)
+   16. ĐIỀU HƯỚNG GRID
 ------------------------------ */
 document.getElementById("prevGridBtn").onclick = () => {
   gridDate.setDate(gridDate.getDate() - (gridMode === "month" ? 30 : 7));
@@ -447,8 +442,110 @@ document.getElementById("gridModeSelect").onchange = (e) => {
   renderGridView();
 };
 
+/* ==========================================================
+   17. QUẢN LÝ LOẠI LỊCH (SỬA, ĐỔI MÀU, XÓA, THÊM)
+========================================================== */
+const typeManagerOverlay = document.getElementById("typeManagerOverlay");
+const typeListContainer = document.getElementById("typeListContainer");
+const manageTypesBtn = document.getElementById("manageTypesBtn");
+const closeTypeManager = document.getElementById("closeTypeManager");
+const addTypeBtn = document.getElementById("addTypeBtn");
+
+manageTypesBtn.onclick = () => {
+  renderTypeManager();
+  typeManagerOverlay.classList.remove("hidden");
+};
+
+closeTypeManager.onclick = () => {
+  typeManagerOverlay.classList.add("hidden");
+};
+
+function renderTypeManager() {
+  typeListContainer.innerHTML = "";
+  types.forEach(type => {
+    const color = typeColors[type] || "#ccc";
+    const div = document.createElement("div");
+    div.className = "type-item";
+    div.innerHTML = `
+      <div class="type-left">
+        <div class="color-box" style="background:${color}" title="Đổi màu"></div>
+        <span class="type-name">${type}</span>
+      </div>
+      <div class="type-actions">
+        <button class="rename-btn" title="Đổi tên">✏️</button>
+        <button class="delete-btn" title="Xóa">🗑️</button>
+      </div>
+    `;
+
+    div.querySelector(".color-box").onclick = () => {
+      const newColor = prompt("Nhập mã màu mới (VD: #ff0000 hoặc hsl(120,70%,50%))", color);
+      if (!newColor) return;
+      typeColors[type] = newColor;
+      saveToLocal();
+      renderSidebar(types);
+      renderTypeManager();
+      renderSchedules(schedules);
+      alert("Đã đổi màu cho loại: " + type);
+    };
+
+    div.querySelector(".rename-btn").onclick = () => {
+      const newName = prompt("Nhập tên mới cho loại:", type);
+      if (!newName || newName.trim() === type) return;
+      if (types.includes(newName)) {
+        alert("Tên này đã tồn tại!");
+        return;
+      }
+
+      const colorVal = typeColors[type];
+      delete typeColors[type];
+      typeColors[newName] = colorVal;
+      types = types.map(t => (t === type ? newName : t));
+      schedules.forEach(s => {
+        if (s.type === type) s.type = newName;
+      });
+
+      saveToLocal();
+      renderSidebar(types);
+      renderTypeManager();
+      renderSchedules(schedules);
+      alert(`Đã đổi tên "${type}" thành "${newName}"`);
+    };
+
+    div.querySelector(".delete-btn").onclick = () => {
+      const hasEvents = schedules.some(s => s.type === type);
+      if (hasEvents) {
+        if (!confirm(`Loại "${type}" đang có lịch. Bạn vẫn muốn xóa?`)) return;
+        schedules = schedules.filter(s => s.type !== type);
+      }
+      types = types.filter(t => t !== type);
+      delete typeColors[type];
+      saveToLocal();
+      renderSidebar(types);
+      renderTypeManager();
+      renderSchedules(schedules);
+      alert("Đã xóa loại: " + type);
+    };
+
+    typeListContainer.appendChild(div);
+  });
+}
+
+addTypeBtn.onclick = () => {
+  const newType = prompt("Nhập tên loại mới:");
+  if (!newType) return;
+  if (types.includes(newType)) return alert("Loại này đã tồn tại!");
+  const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+  typeColors[newType] = randomColor;
+  types.push(newType);
+  saveToLocal();
+  renderSidebar(types);
+  renderTypeManager();
+  renderSchedules(schedules);
+  alert("Đã thêm loại mới: " + newType);
+};
+
 /* -----------------------------
-   17. KHỞI TẠO BAN ĐẦU
+   18. KHỞI TẠO BAN ĐẦU
 ------------------------------ */
 window.onload = () => {
   renderSidebar(types);
