@@ -1,8 +1,11 @@
 /* ==========================================================
-   DAYPILOT - STYLE.CSS (Giai đoạn 10 - Modular)
+   DAYPILOT - STYLE.CSS
+   Phiên bản: Hoàn chỉnh (fix tràn + tối ưu cuộn mượt)
 ========================================================== */
 
-/* RESET */
+/* ==========================================================
+   1. RESET TOÀN BỘ MẶC ĐỊNH
+========================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,9 +19,12 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* HEADER */
+/* ==========================================================
+   2. PHẦN HEADER
+========================================================== */
 header {
   background-color: #3b82f6;
   color: white;
@@ -26,23 +32,30 @@ header {
   text-align: center;
   font-size: 22px;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* BỐ CỤC CHÍNH */
+/* ==========================================================
+   3. BỐ CỤC CHÍNH
+========================================================== */
 .container {
   display: flex;
   flex: 1;
   height: calc(100vh - 60px);
 }
 
-/* SIDEBAR */
+/* ==========================================================
+   4. SIDEBAR DANH MỤC LOẠI LỊCH (CỐ ĐỊNH NÚT, CUỘN RIÊNG DANH SÁCH)
+========================================================== */
 .sidebar {
   width: 240px;
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
   padding: 16px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Ẩn tràn tổng thể, chỉ cuộn phần danh sách */
 }
 
 .sidebar button {
@@ -61,19 +74,24 @@ header {
   background-color: #1d4ed8;
 }
 
-.sidebar ul {
-  list-style: none;
+/* Danh sách loại lịch có cuộn riêng */
+#scheduleList {
+  flex: 1;
+  overflow-y: auto;
   margin-top: 16px;
+  padding-right: 4px;
+  list-style: none;
+  scroll-behavior: smooth;
 }
 
-.sidebar ul li {
+#scheduleList li {
   padding: 8px;
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s;
 }
 
-.sidebar ul li:hover {
+#scheduleList li:hover {
   background-color: #f3f4f6;
 }
 
@@ -86,14 +104,54 @@ header {
   vertical-align: middle;
 }
 
-/* KHU VỰC CHÍNH */
+/* ==========================================================
+   GHIM "TẤT CẢ LỊCH" TRONG SIDEBAR LÊN TRÊN
+========================================================== */
+.all-schedule-fixed {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 2;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+.all-schedule-btn {
+  display: block;
+  padding: 8px;
+  font-weight: 600;
+  color: #2563eb;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.all-schedule-btn:hover {
+  background-color: #eff6ff;
+}
+
+.all-schedule-btn.active {
+  background-color: #dbeafe;
+  color: #1e3a8a;
+  border-left: 4px solid #2563eb;
+  padding-left: 4px;
+}
+
+/* ==========================================================
+   5. KHU VỰC LỊCH CHÍNH
+========================================================== */
 .calendar {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
-/* THANH LỌC */
+/* ==========================================================
+   6. THANH LỌC VÀ CHẾ ĐỘ XEM
+========================================================== */
 .filter-bar {
   display: flex;
   align-items: center;
@@ -147,23 +205,28 @@ header {
   cursor: pointer;
 }
 
-/* LỊCH (LIST VIEW) */
+/* ==========================================================
+   7. LIST VIEW (DẠNG DANH SÁCH)
+========================================================== */
 .schedule-card {
   background: white;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .schedule-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* POPUP */
-#popupOverlay {
+/* ==========================================================
+   8. POPUP (THÊM / SỬA / QUẢN LÝ LOẠI LỊCH)
+========================================================== */
+#popupOverlay,
+#typeManagerOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -173,6 +236,7 @@ header {
   z-index: 100;
 }
 
+/* Popup chính - fix tràn và thêm cuộn mượt */
 .popup {
   background: white;
   padding: 20px;
@@ -181,7 +245,10 @@ header {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-height: 80vh;        /* Giới hạn chiều cao popup */
+  overflow-y: auto;        /* Cho phép cuộn nếu danh sách dài */
+  scroll-behavior: smooth; /* Cuộn mượt */
 }
 
 .popup input,
@@ -207,17 +274,42 @@ header {
   background-color: #1d4ed8;
 }
 
-/* QUẢN LÝ LOẠI LỊCH */
-#typeManagerOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+/* ==========================================================
+   POPUP QUẢN LÝ LOẠI LỊCH (DANH SÁCH CUỘN + NÚT CỐ ĐỊNH)
+========================================================== */
+.type-manager-popup {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 101;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden; /* Không cuộn toàn bộ popup */
 }
 
+/* Danh sách loại lịch có thể cuộn riêng */
+.type-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding-right: 6px;
+}
+
+/* Hai nút cố định dưới cùng popup */
+.type-buttons-fixed {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+/* ==========================================================
+   9. QUẢN LÝ LOẠI LỊCH (TRONG POPUP)
+========================================================== */
 .type-item {
   display: flex;
   align-items: center;
@@ -244,7 +336,9 @@ header {
   cursor: pointer;
 }
 
-/* GRID VIEW */
+/* ==========================================================
+   10. GRID VIEW (DẠNG LƯỚI)
+========================================================== */
 #gridHeader {
   margin-bottom: 10px;
 }
@@ -257,7 +351,8 @@ header {
   margin-bottom: 10px;
 }
 
-.grid-nav button, .grid-nav select {
+.grid-nav button,
+.grid-nav select {
   padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -304,6 +399,9 @@ header {
   line-height: 1.3;
 }
 
+/* ==========================================================
+   11. HIGHLIGHT TRẠNG THÁI ĐẶC BIỆT
+========================================================== */
 .today-cell {
   border: 2px solid #ef4444 !important;
   background-color: #fef2f2 !important;
@@ -315,7 +413,6 @@ header {
   font-weight: 700;
 }
 
-/* Ô ngày được chọn từ filter bar */
 .selected-cell {
   border: 3px solid #2563eb !important;
   background-color: #eff6ff !important;
@@ -329,15 +426,18 @@ header {
   font-weight: 700;
 }
 
-/* Highlight loại lịch đang được chọn */
 .sidebar ul li.active {
-  background-color: #dbeafe;      /* Xanh nhạt */
+  background-color: #dbeafe;
   font-weight: 600;
-  border-left: 4px solid #2563eb; /* Viền xanh */
+  border-left: 4px solid #2563eb;
   color: #1e3a8a;
 }
 
-.edit-btn, .delete-btn {
+/* ==========================================================
+   12. NÚT SỬA / XÓA TRONG CARD
+========================================================== */
+.edit-btn,
+.delete-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -355,6 +455,9 @@ header {
   transform: scale(1.1);
 }
 
+/* ==========================================================
+   13. TIÊU ĐỀ NGÀY TRONG DANH SÁCH
+========================================================== */
 .day-group-title {
   margin: 20px 0 8px 0;
   font-size: 18px;
@@ -365,7 +468,11 @@ header {
   padding-left: 8px;
 }
 
-#scheduleContainer, #gridContainer {
+/* ==========================================================
+   14. HIỆU ỨNG ẨN / HIỆN
+========================================================== */
+#scheduleContainer,
+#gridContainer {
   transition: opacity 0.25s ease;
 }
 
@@ -374,24 +481,45 @@ header {
   pointer-events: none;
 }
 
-/* RESPONSIVE */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================
+   15. THANH CUỘN MƯỢT VÀ TINH CHỈNH
+========================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ==========================================================
+   16. RESPONSIVE CHO MÀN HÌNH NHỎ
+========================================================== */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #ddd;
   }
+
   .calendar {
     padding: 12px;
   }
+
   #gridContainer {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-.hidden {
-  display: none !important;
 }

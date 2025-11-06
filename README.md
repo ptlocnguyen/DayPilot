@@ -9,7 +9,7 @@ với giao diện thân thiện, nhiều chế độ xem, và khả năng mở r
 
 Dự án được phát triển theo hướng **mở rộng theo giai đoạn**,  
 hướng tới việc trở thành **một ứng dụng quản lý lịch thông minh**,  
-có thể **đồng bộ với Google Drive** trong các giai đoạn tiếp theo.
+có thể **đồng bộ với Firebase Firestore** trong các giai đoạn tiếp theo.
 
 ---
 
@@ -121,7 +121,7 @@ có thể **đồng bộ với Google Drive** trong các giai đoạn tiếp the
 |------------|----------------|-------|
 | **9. Notification System** | Thêm nhắc nhở hoạt động | Dùng Notification API, cảnh báo trước giờ diễn ra |
 | **10. Responsive hoàn chỉnh** | Hiển thị đẹp trên mobile | Co giãn grid, popup và sidebar |
-| **11. Cloud Sync (Google Drive)** | Lưu dữ liệu thật | Dùng Google Drive API để đồng bộ |
+| **11. Cloud Sync (Firebase Firestore)** | Lưu dữ liệu thật | Dùng Firebase Firestore API để đồng bộ |
 | **12. Theme Customization** | Dark / Light mode | Tùy chỉnh màu nền giao diện |
 | **13. Xuất / Nhập dữ liệu** | Sao lưu cá nhân | Xuất `.json` / `.ics`, import lại khi cần |
 | **14. Dashboard / Statistics** | Thống kê thời gian | Hiển thị biểu đồ tổng hợp hoạt động |

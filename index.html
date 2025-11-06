@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DayPilot - Quản lý lịch cá nhân</title>
-  <!-- Nếu bạn chưa có src/css/style.css, hãy đổi sang style.css hoặc đúng đường dẫn bạn đang dùng -->
   <link rel="stylesheet" href="src/css/style.css" />
 </head>
 
 <body>
+  <!-- ===== HEADER ===== -->
   <header>
     <h1>DayPilot</h1>
   </header>
 
+  <!-- ===== LAYOUT CHÍNH ===== -->
   <div class="container">
+    <!-- Sidebar: danh mục loại lịch -->
     <aside class="sidebar">
       <button id="addScheduleBtn">+ Thêm lịch</button>
-      <button id="manageTypesBtn" style="margin-top:8px;background-color:#10b981;">Quản lý loại lịch</button>
+      <button id="manageTypesBtn" style="margin-top:8px;background-color:#10b981;">
+        Quản lý loại lịch
+      </button>
       <ul id="scheduleList"></ul>
     </aside>
 
+    <!-- Khu vực chính -->
     <main class="calendar">
       <h2>Lịch của bạn</h2>
 
+      <!-- Thanh lọc và chuyển chế độ xem -->
       <div class="filter-bar">
         <input type="date" id="dateFilter" />
         <button id="todayBtn">Hôm nay</button>
@@ -37,8 +42,10 @@
         <button id="toggleViewBtn" class="secondary-btn">Chuyển sang dạng lưới</button>
       </div>
 
+      <!-- Danh sách (List view) -->
       <div id="scheduleContainer"></div>
 
+      <!-- Header của Grid View -->
       <div id="gridHeader" class="hidden">
         <div class="grid-nav">
           <button id="prevGridBtn">⬅️</button>
@@ -47,6 +54,7 @@
         </div>
       </div>
 
+      <!-- Lưới (Grid View) -->
       <div id="gridContainer" class="hidden"></div>
 
       <!-- Popup thêm/sửa lịch -->
@@ -88,8 +96,7 @@
     </main>
   </div>
 
-  <!-- Chỉ cần nạp app.js, các module khác sẽ được import nội bộ -->
+  <!-- Chỉ cần import app.js (gọi tất cả module khác bên trong) -->
   <script type="module" src="src/js/app.js"></script>
 </body>
-
 </html>

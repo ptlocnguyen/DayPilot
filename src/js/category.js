@@ -1,7 +1,9 @@
 /* ==========================================================
-   DAYPILOT - CATEGORY MODULE (FINAL FIXED VERSION)
-   Quản lý loại lịch: CRUD + đổi màu + rename
-   Đồng bộ Firestore 100%, không đụng localStorage
+   DAYPILOT - CATEGORY MODULE
+   Chức năng: Quản lý loại lịch (CRUD, đổi màu, đổi tên)
+   - Đồng bộ hoàn toàn với Firestore (Firebase)
+   - Popup quản lý loại lịch có danh sách cuộn riêng, nút cố định
+   - Sidebar ghim "Tất cả lịch" trên cùng
 ========================================================== */
 
 import { Storage } from "./storage.js";
@@ -19,49 +21,61 @@ export const Category = {
   },
 
   async save() {
-    const data = await Storage.load(); // lấy lịch mới nhất
+    const data = await Storage.load();
     await Storage.save({
       schedules: data.schedules || [],
       types: this.types,
-      typeColors: this.typeColors,
+      typeColors: this.typeColors
     });
   },
 
+  // Hiển thị sidebar: ghim "Tất cả lịch" sticky, danh sách loại bên dưới
   renderSidebar() {
     const list = document.getElementById("scheduleList");
     list.innerHTML = "";
 
-    // Mục "Tất cả lịch"
-    const allItem = document.createElement("li");
-    allItem.innerHTML = `<b>Tất cả lịch</b>`;
-    allItem.style.color = "#2563eb";
+    // Khối sticky cho "Tất cả lịch"
+    const allWrapper = document.createElement("div");
+    allWrapper.className = "all-schedule-fixed";
+
+    const allItem = document.createElement("div");
+    allItem.className = "all-schedule-btn";
+    allItem.textContent = "Tất cả lịch";
     allItem.onclick = () => {
-      document
-        .querySelectorAll("#scheduleList li")
-        .forEach((li) => li.classList.remove("active"));
+      // Bỏ active trên tất cả li loại
+      document.querySelectorAll("#scheduleList li").forEach(li => li.classList.remove("active"));
+      // Active nút Tất cả lịch
       allItem.classList.add("active");
+      // Gửi sự kiện reset lọc
       document.dispatchEvent(new CustomEvent("filterAll"));
     };
-    list.appendChild(allItem);
 
-    // Render từng loại lịch
-    this.types.forEach((type) => {
+    allWrapper.appendChild(allItem);
+    list.appendChild(allWrapper);
+
+    // Danh sách loại lịch
+    this.types.forEach(type => {
       const li = document.createElement("li");
       li.innerHTML = `
-        <span class="color-dot" style="background:${
-          this.typeColors[type] || "#ccc"
-        }"></span>
+        <span class="color-dot" style="background:${this.typeColors[type] || "#ccc"}"></span>
         ${Utils.capitalize(type)}
       `;
       li.onclick = () => {
-        document
-          .querySelectorAll("#scheduleList li")
-          .forEach((liItem) => liItem.classList.remove("active"));
+        // Bỏ active ở nút Tất cả lịch
+        allItem.classList.remove("active");
+        // Bỏ active ở các li khác
+        document.querySelectorAll("#scheduleList li").forEach(liItem => liItem.classList.remove("active"));
+        // Active li hiện tại
         li.classList.add("active");
+        // Gửi sự kiện lọc theo loại
         document.dispatchEvent(new CustomEvent("filterType", { detail: type }));
       };
       list.appendChild(li);
     });
+
+    // Mặc định: chỉ set active cho "Tất cả lịch" tại đây
+    // (không set active cho bất kỳ li nào)
+    allItem.classList.add("active");
   },
 
   openManager() {
@@ -73,12 +87,15 @@ export const Category = {
 
   templateManager() {
     return `
-      <div id="typeManagerPopup" class="popup">
+      <div id="typeManagerPopup" class="popup type-manager-popup">
         <h3>Quản lý loại lịch</h3>
-        <div id="typeListContainer"></div>
-        <hr style="margin:10px 0;" />
-        <button id="addTypeBtn" style="background-color:#10b981;">+ Thêm loại mới</button>
-        <button id="closeTypeManager" class="secondary-btn">Đóng</button>
+
+        <div id="typeListContainer" class="type-list-scroll"></div>
+
+        <div id="typeButtons" class="type-buttons-fixed">
+          <button id="addTypeBtn" style="background-color:#10b981;">+ Thêm loại mới</button>
+          <button id="closeTypeManager" class="secondary-btn">Đóng</button>
+        </div>
       </div>
     `;
   },
@@ -87,12 +104,11 @@ export const Category = {
     const container = document.getElementById("typeListContainer");
     container.innerHTML = "";
 
-    // Sync dữ liệu Firestore mới nhất
     const data = await Storage.load();
     this.types = data.types || this.types;
     this.typeColors = data.typeColors || this.typeColors;
 
-    this.types.forEach((type) => {
+    this.types.forEach(type => {
       const color = this.typeColors[type] || "#ccc";
       const div = document.createElement("div");
       div.className = "type-item";
@@ -107,7 +123,6 @@ export const Category = {
         </div>
       `;
 
-      // Đổi màu
       div.querySelector(".color-box").onclick = async () => {
         const newColor = prompt("Nhập mã màu mới:", color);
         if (!newColor) return;
@@ -116,7 +131,6 @@ export const Category = {
         await this.reloadUI();
       };
 
-      // Đổi tên
       div.querySelector(".rename-btn").onclick = async () => {
         const newName = prompt("Nhập tên mới:", type);
         if (!newName || newName.trim() === type) return;
@@ -125,38 +139,34 @@ export const Category = {
         const colorVal = this.typeColors[type];
         delete this.typeColors[type];
         this.typeColors[newName] = colorVal;
-        this.types = this.types.map((t) => (t === type ? newName : t));
+        this.types = this.types.map(t => (t === type ? newName : t));
 
         const cur = await Storage.load();
-        const schedules = (cur.schedules || []).map((s) =>
-          s.type === type ? { ...s, type: newName } : s
-        );
+        const schedules = (cur.schedules || []).map(s => s.type === type ? { ...s, type: newName } : s);
 
         await Storage.save({
           schedules,
           types: this.types,
-          typeColors: this.typeColors,
+          typeColors: this.typeColors
         });
 
         await this.reloadUI();
       };
 
-      // Xóa loại
       div.querySelector(".delete-btn").onclick = async () => {
         const cur = await Storage.load();
         let schedules = cur.schedules || [];
-        const hasEvents = schedules.some((s) => s.type === type);
-        if (hasEvents && !confirm(`Loại "${type}" đang có lịch. Xóa luôn?`))
-          return;
+        const hasEvents = schedules.some(s => s.type === type);
+        if (hasEvents && !confirm(`Loại "${type}" đang có lịch. Xóa luôn?`)) return;
 
-        schedules = schedules.filter((s) => s.type !== type);
-        this.types = this.types.filter((t) => t !== type);
+        schedules = schedules.filter(s => s.type !== type);
+        this.types = this.types.filter(t => t !== type);
         delete this.typeColors[type];
 
         await Storage.save({
           schedules,
           types: this.types,
-          typeColors: this.typeColors,
+          typeColors: this.typeColors
         });
 
         await this.reloadUI();
@@ -165,7 +175,6 @@ export const Category = {
       container.appendChild(div);
     });
 
-    // Thêm loại mới
     document.getElementById("addTypeBtn").onclick = async () => {
       const newType = prompt("Nhập tên loại mới:");
       if (!newType || this.types.includes(newType)) return;
@@ -173,6 +182,7 @@ export const Category = {
       this.typeColors[newType] = Utils.randomColor();
       await this.save();
       await this.reloadUI();
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
     };
 
     document.getElementById("closeTypeManager").onclick = () => {
@@ -181,7 +191,6 @@ export const Category = {
   },
 
   async reloadUI() {
-    // cập nhật sidebar + manager list + render lại lịch
     this.renderSidebar();
     this.renderManagerList();
     document.dispatchEvent(new CustomEvent("rerenderCalendar"));
@@ -190,5 +199,5 @@ export const Category = {
   bindManagerEvents() {
     const btn = document.getElementById("manageTypesBtn");
     if (btn) btn.onclick = () => this.openManager();
-  },
+  }
 };
